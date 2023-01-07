@@ -8,6 +8,7 @@ app.use(bodyParser.json());
 app.set("view engine","ejs");
 
 app.get("/",async (request,response)=>{
+    // Todo.addTodo({title:"Drink Milk",dueDate:Date()})
     const alltodos = await Todo.getTodos();
     console.log(alltodos);
     if (request.accepts("html")) {
