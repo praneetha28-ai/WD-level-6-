@@ -25,6 +25,9 @@ module.exports = (sequelize, DataTypes) => {
     delete(){
       return this.destroy();
     }
+    static getTodos(){
+      return this.findAll();
+    }
   }
   Todo.init({
     title: DataTypes.STRING,
