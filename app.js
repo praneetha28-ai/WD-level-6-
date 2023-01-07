@@ -9,6 +9,7 @@ app.set("view engine","ejs");
 
 app.get("/",async (request,response)=>{
     const alltodos = await Todo.getTodos();
+    console.log(alltodos);
     if (request.accepts("html")) {
         response.render('index',{
                 alltodos
