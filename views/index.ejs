@@ -8,16 +8,18 @@
     <title>Document</title>
 </head>
 <body>
-    <%- include('footer.ejs') %>
+    <%- include('header.ejs') %>
     <table>
         <% for( var i =0;i < 5;i++){ %>
         <tr>
             <td>
-               <p>helloooo</p>
+               <%= alltodos[i].title %>
             </td>
         </tr>
         <% } %>
     </table>
-    <%- include('footer.ejs') %>
 </body>
+<footer>
+    <%- include('footer.ejs') %>
+</footer>
 </html>
