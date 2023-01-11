@@ -12,12 +12,12 @@ app.get("/", async (request, response) => {
   const dueToday = await Todo.dueToday();
   const dueLater = await Todo.dueLater();
   if (request.accepts("html")) {
-	response.render("index",{
-	  title:"Todo Application",
-	  overdue,
-    dueToday,
-    dueLater
-	})
+    response.render("index",{
+      title:"Todo Application",
+      overdue,
+      dueToday,
+      dueLater
+      })
 }else{
   response.json({
     overdue,
