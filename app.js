@@ -8,18 +8,23 @@ app.use(express.urlencoded({ extended: false }));
 app.set("view engine", "ejs");
 
 app.get("/", async (request, response) => {
-  // Todo.addTodo({title:"Drink Milk",dueDate:Date()})
-  const alltodos = await Todo.getTodos();
-  console.log(alltodos);
+  const overdue = await Todo.overdue();
+  const dueToday = await Todo.dueToday();
+  const dueLater = await Todo.dueLater();
   if (request.accepts("html")) {
-    response.render("index", {
-      alltodos,
-    });
-  } else {
-    response.json({
-      alltodos,
-    });
-  }
+	response.render("index",{
+	  title:"Todo Application",
+	  overdue,
+    dueToday,
+    dueLater
+	})
+}else{
+  response.json({
+    overdue,
+    dueToday,
+    dueLater
+  })
+}
 });
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -35,7 +40,6 @@ app.get("/todos", async (request, response) => {
     return response.status(422).json(error);
   }
 });
-
 app.post("/todos", async (request, response) => {
   console.log("Creating a todo", request.body);
   try {
@@ -67,13 +71,8 @@ app.put("/todos/:id/markAsCompleted", async (request, response) => {
 app.delete("/todos/:id", async (request, response) => {
   console.log("Delete a todo by id:", request.params.id);
   try {
-    const todo = await Todo.findByPk(request.params.id);
-    if (todo) {
-      await todo.delete();
-      return response.json(true);
-    } else {
-      return response.json(false);
-    }
+    await Todo.remove(request.params.id);
+    return response.json({success:true});
   } catch (error) {
     console.log(error);
     return response.status(422).json(false);

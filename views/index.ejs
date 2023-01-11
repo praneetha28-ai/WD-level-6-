@@ -5,7 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>To-Do Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="public\css\style.css" />
+    <link rel="stylesheet" href="../public/css/style.css" />
+    <script>
+      function updateTodo(id) {
+        fetch(`/todos/${id}/markAsCompleted`,{
+          method:"put",
+          headers:{"Content-Type":"application/json"},
+        }).then((res)=>{
+          if (res.ok) {
+	          window.location.reload();
+          }
+        }).catch((err)=>console.log(err));
+      }
+      function deleteTodo(id) {
+        fetch(`/todos/${id}`,{
+          method:"delete",
+          headers:{"Content-Type":"application/json"},
+        }).then((res)=>{
+          if(res.ok){
+            window.location.reload();
+          }
+        }).catch((err)=>console.log(err));
+      }
+    </script>
   </head>
   <body>
     <div class="grid grid-cols-6">
@@ -39,7 +61,9 @@
             </div>
           </div>
         </form>
-        <%- include('todos.ejs') %>
+        <%- include('todo.ejs',{title:"Overdue",data: overdue}) %>
+        <%- include('todo.ejs',{title:"Due Today",data: dueToday}) %>
+        <%- include('todo.ejs',{title:"Due Later",data: dueLater}) %>
       </div>
     </div>
   </body>
