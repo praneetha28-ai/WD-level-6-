@@ -66,6 +66,19 @@ module.exports = (sequelize, DataTypes) => {
         }
       });
     }
+    static completed() {
+      return this.findAll({
+        where: {
+          
+          completed: true,
+        },
+      });
+    }
+    setCompletionStatus(completed) {
+        return this.update({
+          completed,
+        });
+    }
   }
   Todo.init(
     {
