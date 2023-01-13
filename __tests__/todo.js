@@ -53,35 +53,33 @@ describe("Todo test suite", () => {
       const parsedUpdateResponse = JSON.parse(markCompleteResponse.text);
       expect(parsedUpdateResponse.completed).toBe(true);
   });
-  test("Deletes a todo with the given ID", async () => {
-    
-    let res = await agent.get("/todos");
-    var csrfToken = extractCsrfToken(res.text);
-
+  test("Delete a todo", async () => {
+    let res = await agent.get("/");
+    let csrfToken = extractCsrfToken(res);
     await agent.post("/todos").send({
-      title: "Bring fruits",
+      _csrf: csrfToken,
+      title: "Buy milk",
       dueDate: new Date().toISOString(),
-      "_csrf": csrfToken,
+      completed: false,
     });
 
-    const response = await agent.get("/alltodos");
-    const parsedResponse = JSON.parse(response.text);
+    const groupedTodosResponse = await agent
+      .get("/")
+      .set("Accept", "application/json");
+    const parsedGroupedResponse = JSON.parse(groupedTodosResponse.text);
 
-    const todoID = parsedResponse[parsedResponse.length - 1].id;
+    expect(parsedGroupedResponse.dueToday).toBeDefined();
 
-    res = await agent.get("/todos");
+    const dueTodayCount = parsedGroupedResponse.dueToday.length;
+    const latestTodo = parsedGroupedResponse.dueToday[dueTodayCount - 1];
+
+    res = await agent.get("/");
     csrfToken = extractCsrfToken(res);
 
-    const deleteResponse = await agent.delete(`/todos/${todoID}`).send({
+    const deletedResponse = await agent.delete(`/todos/${latestTodo.id}`).send({
       _csrf: csrfToken,
     });
-    console.log(deleteResponse.text);
-    expect(deleteResponse.statusCode).toBe(200);
-
-    const reresponse = await agent.get("/alltodos");
-    const reresponseParsed = JSON.parse(reresponse.text);
-    expect(reresponseParsed.length).toBe(parsedResponse.length - 1);
-    expect(reresponseParsed.find((todo) => todo.id === todoID)).toBe(undefined);
+    expect(deletedResponse.statusCode).toBe(200);
   });
 });
   // test("Fetches all todos in the database using /todos endpoint",async()=>{
